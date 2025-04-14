@@ -1,8 +1,9 @@
-import { formatDate } from "@/lib/utils";
+import { formatDate, calculateHabitStats } from "@/lib/utils";
 import { Link } from "wouter";
 import { Download } from "lucide-react";
 import { loadHabits } from "@/lib/habitStore";
 import { useToast } from "@/hooks/use-toast";
+import { getTodayISODate } from "@/lib/utils";
 
 const Header = () => {
   const today = new Date();
@@ -22,9 +23,17 @@ const Header = () => {
       }
 
       // Convert habits to CSV format
-      let csvContent = "id,title,description,frequency,frequencyCount,frequencyPeriod,selectedDays,createdAt\n";
+      let csvContent = "id,title,description,frequency,frequencyCount,frequencyPeriod,selectedDays,createdAt,currentStreak,bestStreak,completionRate,todayCompleted,totalCompletions\n";
       
       habits.forEach(habit => {
+        // Get progress statistics
+        const stats = calculateHabitStats(habit);
+        const todayDate = getTodayISODate();
+        const todayCompleted = habit.history[todayDate] ? 'Yes' : 'No';
+        
+        // Count total completions
+        const totalCompletions = Object.values(habit.history).filter(Boolean).length;
+        
         // Format the habit data for CSV
         const row = [
           habit.id,
@@ -34,7 +43,12 @@ const Header = () => {
           habit.frequencyCount || '',
           habit.frequencyPeriod || '',
           habit.selectedDays ? `"${habit.selectedDays.join(',')}"` : '',
-          habit.createdAt
+          habit.createdAt,
+          stats.currentStreak,
+          stats.bestStreak, 
+          `${stats.completionRate}%`,
+          todayCompleted,
+          totalCompletions
         ];
         csvContent += row.join(',') + '\n';
       });
@@ -52,7 +66,7 @@ const Header = () => {
       
       toast({
         title: "Export successful",
-        description: "Your habit data has been exported to CSV",
+        description: "Your habit data and progress metrics have been exported to CSV",
       });
     } catch (error) {
       toast({

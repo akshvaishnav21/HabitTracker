@@ -9,6 +9,7 @@ import Header from "@/components/Header";
 import AddHabitButton from "@/components/AddHabitButton";
 import IntroductionModal from "@/components/IntroductionModal";
 import { loadHabits } from "@/lib/habitStore";
+import { useReminders, initializeReminderSystem } from "@/hooks/use-reminders";
 
 function App() {
   const [location, setLocation] = useLocation();
