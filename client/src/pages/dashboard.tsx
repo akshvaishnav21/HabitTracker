@@ -9,7 +9,7 @@ import WeeklyProgress from '@/components/WeeklyProgress';
 import ContributionMatrix from '@/components/ContributionMatrix';
 import HabitList from '@/components/HabitList';
 import { Link } from 'wouter';
-import { Settings, PlusIcon } from 'lucide-react';
+import { Settings, PlusIcon, Calendar, ListChecks, BarChart2 } from 'lucide-react';
 import AddHabitButton from '@/components/AddHabitButton';
 
 const Dashboard: React.FC = () => {
@@ -74,10 +74,15 @@ const Dashboard: React.FC = () => {
       </div>
 
       {/* Today's Habits */}
-      <div className="mb-8">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold text-gray-800">Today's Habits</h2>
-          <div className="text-sm text-gray-500">{formattedToday}</div>
+      <div className="mb-10">
+        <div className="flex items-center justify-between mb-5">
+          <h2 className="text-xl font-bold text-gray-800 flex items-center">
+            <div className="h-8 w-8 rounded-full bg-gradient-primary mr-2 flex items-center justify-center shadow-sm">
+              <Calendar className="h-4 w-4 text-white" />
+            </div>
+            Today's Habits
+          </h2>
+          <div className="text-sm bg-gray-100 px-3 py-1.5 rounded-full font-medium text-gray-600">{formattedToday}</div>
         </div>
         
         <div className="space-y-4">
@@ -123,9 +128,14 @@ const Dashboard: React.FC = () => {
       </div>
 
       {/* Habit Progress */}
-      <div className="mb-8">
-        <h2 className="text-lg font-semibold text-gray-800 mb-4">Habit Progress</h2>
-        <div className="space-y-6">
+      <div className="mb-10">
+        <h2 className="text-xl font-bold text-gray-800 flex items-center mb-5">
+          <div className="h-8 w-8 rounded-full bg-gradient-success mr-2 flex items-center justify-center shadow-sm">
+            <BarChart2 className="h-4 w-4 text-white" />
+          </div>
+          Habit Progress
+        </h2>
+        <div className="space-y-8">
           <ContributionMatrix 
             habits={habits} 
             title="Daily Habits" 

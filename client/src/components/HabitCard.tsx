@@ -42,26 +42,28 @@ const HabitCard: React.FC<HabitCardProps> = ({ habit, isCompleted, onToggle }) =
   };
 
   return (
-    <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden hover:shadow-md transition-shadow card-gradient">
+    <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden hover:shadow-md transition-all card-gradient">
       <div className="p-4 sm:px-5 flex items-center justify-between">
         <div className="flex items-center flex-grow">
           <button 
-            className={`w-8 h-8 rounded-full border-2 ${isCompleted 
+            className={`w-10 h-10 rounded-full border-2 ${isCompleted 
               ? 'bg-gradient-success border-transparent' 
               : 'border-gray-300 hover:border-primary'} flex items-center justify-center mr-4 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${
               isAnimating ? 'animate-bounce' : ''
-            }`}
+            } transform transition-transform hover:scale-110`}
             onClick={handleToggle}
             aria-label={isCompleted ? "Mark incomplete" : "Mark complete"}
           >
             {isCompleted ? (
-              <CheckIcon className="h-5 w-5 text-white" />
+              <CheckIcon className="h-6 w-6 text-white" />
             ) : (
-              <XIcon className="h-5 w-5 text-gray-300 opacity-0 group-hover:opacity-100" />
+              <div className="w-full h-full rounded-full hover:bg-primary/5 flex items-center justify-center">
+                <XIcon className="h-5 w-5 text-gray-300 opacity-0 group-hover:opacity-100" />
+              </div>
             )}
           </button>
           <div className="flex-grow">
-            <h3 className={`font-bold text-base line-clamp-1 ${isCompleted ? 'line-through opacity-60' : ''}`}
+            <h3 className={`font-bold text-base line-clamp-1 ${isCompleted ? 'line-through opacity-60' : 'text-gray-800'}`}
                 title={habit.title}>
               {habit.title}
             </h3>
@@ -71,19 +73,19 @@ const HabitCard: React.FC<HabitCardProps> = ({ habit, isCompleted, onToggle }) =
               </p>
             )}
             <div className="flex items-center mt-2 flex-wrap gap-2">
-              <div className="text-xs font-bold px-2.5 py-1 rounded-full bg-gradient-primary text-white">
+              <div className="text-xs font-bold px-3 py-1.5 rounded-full bg-gradient-primary text-white shadow-sm">
                 {habit.frequency === 'custom' 
                   ? `${habit.frequencyCount}x ${habit.frequencyPeriod}` 
                   : habit.frequency.charAt(0).toUpperCase() + habit.frequency.slice(1)}
               </div>
-              <div className={`flex items-center px-2.5 py-1 rounded-full text-xs font-bold ${
+              <div className={`flex items-center px-3 py-1.5 rounded-full text-xs font-bold shadow-sm ${
                 currentStreak > 0 ? 'bg-gradient-success text-white' : 'bg-gray-100 text-gray-600'
               }`}>
-                <Award className="h-3 w-3 mr-1" />
+                <Award className="h-3.5 w-3.5 mr-1" />
                 {currentStreak > 0 ? `${currentStreak}-day streak` : 'No streak yet'}
               </div>
               {habit.reminderEnabled && habit.reminderTime && (
-                <div className="text-xs font-medium px-2.5 py-1 rounded-full bg-amber-100 text-amber-800">
+                <div className="text-xs font-medium px-3 py-1.5 rounded-full bg-amber-100 text-amber-800 shadow-sm">
                   Reminder: {habit.reminderTime}
                 </div>
               )}
@@ -92,7 +94,7 @@ const HabitCard: React.FC<HabitCardProps> = ({ habit, isCompleted, onToggle }) =
         </div>
         <div className="ml-4">
           <Link href={`/habits/${habit.id}/edit`}>
-            <div className="p-2 rounded-full text-primary hover:bg-primary/10 cursor-pointer">
+            <div className="p-2.5 rounded-full text-primary hover:bg-primary/10 cursor-pointer transform transition-transform hover:scale-110">
               <Edit2Icon className="h-5 w-5" />
             </div>
           </Link>

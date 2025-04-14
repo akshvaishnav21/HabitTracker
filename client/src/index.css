@@ -43,6 +43,12 @@
   position: relative;
   overflow: hidden;
   z-index: 1;
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.card-gradient:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
 }
 
 .card-gradient::after {
