@@ -152,21 +152,40 @@ function shouldCompleteToday(habit: Habit): boolean {
   // Daily habits should complete every day
   if (habit.frequency === 'daily') return true;
   
-  // Weekly habits should complete any day of the week
-  if (habit.frequency === 'weekly') return true;
-  
-  if (habit.frequency === 'custom') {
-    // Logic for custom frequency
-    // For example, if it's 3x weekly, user can pick any 3 days
-    return true;
+  // Weekly habits should be completed on Mondays
+  if (habit.frequency === 'weekly') {
+    const today = new Date();
+    return today.getDay() === 1; // Monday is 1
   }
   
+  if (habit.frequency === 'custom' && habit.selectedDays) {
+    // Check if today is one of the selected days
+    const today = new Date();
+    const dayOfWeek = format(today, 'EEE').toLowerCase();
+    return habit.selectedDays.includes(dayOfWeek as any);
+  }
+  
+  // Default fallback
   return false;
 }
 
 function shouldCompleteThatDay(habit: Habit, date: Date): boolean {
-  // For simple implementation, assume all habits should be completed on all days
-  return true;
+  // Daily habits should complete every day
+  if (habit.frequency === 'daily') return true;
+  
+  // Weekly habits should be completed on Mondays
+  if (habit.frequency === 'weekly') {
+    return date.getDay() === 1; // Monday is 1
+  }
+  
+  if (habit.frequency === 'custom' && habit.selectedDays) {
+    // Check if the date is one of the selected days
+    const dayOfWeek = format(date, 'EEE').toLowerCase();
+    return habit.selectedDays.includes(dayOfWeek as any);
+  }
+  
+  // Default fallback
+  return false;
 }
 
 export function getStreakText(streak: number): string {

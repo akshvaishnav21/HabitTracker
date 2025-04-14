@@ -6,6 +6,7 @@ import { Habit, WeeklyProgress as WeeklyProgressType } from '@/lib/types';
 import StatCard from '@/components/StatCard';
 import HabitCard from '@/components/HabitCard';
 import WeeklyProgress from '@/components/WeeklyProgress';
+import ContributionMatrix from '@/components/ContributionMatrix';
 import HabitList from '@/components/HabitList';
 import { Link } from 'wouter';
 import { Settings, PlusIcon } from 'lucide-react';
@@ -121,20 +122,40 @@ const Dashboard: React.FC = () => {
         </div>
       </div>
 
-      {/* Weekly Progress */}
+      {/* Habit Progress */}
       <div className="mb-8">
-        <h2 className="text-lg font-semibold text-gray-800 mb-4">Weekly Progress</h2>
-        <WeeklyProgress weeklyProgress={weeklyProgress} />
+        <h2 className="text-lg font-semibold text-gray-800 mb-4">Habit Progress</h2>
+        <div className="space-y-6">
+          <ContributionMatrix 
+            habits={habits} 
+            title="Daily Habits" 
+            frequency="daily"
+          />
+          
+          <ContributionMatrix 
+            habits={habits} 
+            title="Weekly Habits" 
+            frequency="weekly"
+          />
+          
+          <ContributionMatrix 
+            habits={habits} 
+            title="Custom Habits" 
+            frequency="custom"
+          />
+        </div>
       </div>
 
       {/* All Habits */}
       <div className="mb-8">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-semibold text-gray-800">All Habits</h2>
-          <button className="text-sm text-primary hover:text-indigo-700 flex items-center">
-            <Settings className="h-4 w-4 mr-1" />
-            Manage
-          </button>
+          <Link href="/habits/new">
+            <div className="text-sm text-primary hover:text-indigo-700 flex items-center cursor-pointer">
+              <Settings className="h-4 w-4 mr-1" />
+              Manage
+            </div>
+          </Link>
         </div>
         
         <HabitList habits={habits} />

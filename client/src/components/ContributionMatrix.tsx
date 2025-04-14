@@ -1,7 +1,8 @@
 import React from 'react';
-import { format, addDays, startOfWeek, eachDayOfInterval, subMonths, isSameDay } from 'date-fns';
-import { Habit, HabitHistory } from '@/lib/types';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Habit } from '@/lib/types';
+import { format, startOfMonth, endOfMonth, eachDayOfInterval, eachWeekOfInterval, addDays, subMonths, getDay } from 'date-fns';
+import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '@/components/ui/tooltip';
+import { cn } from '@/lib/utils';
 
 interface ContributionMatrixProps {
   habits: Habit[];
@@ -11,144 +12,167 @@ interface ContributionMatrixProps {
 }
 
 const ContributionMatrix: React.FC<ContributionMatrixProps> = ({ 
-  habits, 
-  title,
-  showMonths = true,
-  frequency
+  habits,
+  title, 
+  showMonths = false,
+  frequency = 'daily'
 }) => {
+  // Filter habits by frequency
+  const filteredHabits = habits.filter(habit => habit.frequency === frequency);
+  
+  if (filteredHabits.length === 0) {
+    return (
+      <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-6">
+        <h3 className="text-md font-semibold text-gray-700 mb-4">{title}</h3>
+        <div className="text-center py-8 text-gray-500">
+          No {frequency} habits to display
+        </div>
+      </div>
+    );
+  }
+  
+  // Calculate date range for the matrix (last 3 months)
   const today = new Date();
-  const startDate = subMonths(today, 11);
-  const startOfWeekDate = startOfWeek(startDate);
+  const monthsAgo = subMonths(today, 3);
+  const startDate = startOfMonth(monthsAgo);
+  const endDate = endOfMonth(today);
   
-  // Generate an array of dates for the past 12 months
-  const dateInterval = eachDayOfInterval({ start: startOfWeekDate, end: today });
+  // Generate weeks for the matrix
+  const weeks = eachWeekOfInterval({ start: startDate, end: endDate }, { weekStartsOn: 1 });
   
-  // Group dates by month
-  const datesByMonth: { [month: string]: Date[] } = {};
-  dateInterval.forEach(date => {
-    const monthKey = format(date, 'MMM');
-    if (!datesByMonth[monthKey]) {
-      datesByMonth[monthKey] = [];
-    }
-    datesByMonth[monthKey].push(date);
-  });
+  // Generate days of the week labels
+  const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
   
-  // Filter habits based on frequency if specified
-  const filteredHabits = frequency 
-    ? habits.filter(habit => 
-        frequency === 'custom' 
-          ? habit.frequency === 'custom'
-          : habit.frequency === frequency
-      )
-    : habits;
-  
-  // Calculate completion status for each date
+  // Function to calculate cell color based on completion status
   const getCompletionStatus = (date: Date): number => {
-    if (date > today) return 0; // Future date
-    
+    // Count how many of the filtered habits were completed on this date
     const dateStr = format(date, 'yyyy-MM-dd');
     let completedCount = 0;
     let totalCount = 0;
     
-    filteredHabits.forEach(habit => {
-      // For custom frequency, check if this day of week is selected
-      if (habit.frequency === 'custom' && habit.selectedDays) {
-        const dayOfWeek = format(date, 'EEE').toLowerCase();
-        if (!habit.selectedDays.includes(dayOfWeek as any)) {
-          return; // Skip this habit for this day
+    // For each habit, check if it was completed on this date
+    for (const habit of filteredHabits) {
+      // For 'daily' frequency, check every day
+      if (habit.frequency === 'daily') {
+        totalCount++;
+        if (habit.history[dateStr]) {
+          completedCount++;
+        }
+      } 
+      // For 'weekly' frequency, only check Mondays
+      else if (habit.frequency === 'weekly' && getDay(date) === 1) {
+        totalCount++;
+        if (habit.history[dateStr]) {
+          completedCount++;
         }
       }
-      
-      // For weekly habits, only count it on the first day of the week
-      if (habit.frequency === 'weekly' && format(date, 'E') !== '1') {
-        return; // Skip weekly habits except on Monday
+      // For 'custom' frequency, check if the date matches one of the selected days
+      else if (habit.frequency === 'custom' && habit.selectedDays) {
+        const dayOfWeek = format(date, 'EEE').toLowerCase();
+        if (habit.selectedDays.includes(dayOfWeek as any)) {
+          totalCount++;
+          if (habit.history[dateStr]) {
+            completedCount++;
+          }
+        }
       }
-      
-      totalCount++;
-      if (habit.history[dateStr]) {
-        completedCount++;
-      }
-    });
-    
-    if (totalCount === 0) return 0;
-    return Math.round((completedCount / totalCount) * 4); // 0-4 scale for intensity
-  };
-  
-  // Get color class based on completion status (0-4)
-  const getColorClass = (status: number): string => {
-    switch (status) {
-      case 0: return 'bg-gray-200 dark:bg-gray-800';
-      case 1: return 'bg-green-100 dark:bg-green-900';
-      case 2: return 'bg-green-300 dark:bg-green-700';
-      case 3: return 'bg-green-500 dark:bg-green-500';
-      case 4: return 'bg-green-700 dark:bg-green-300';
-      default: return 'bg-gray-200 dark:bg-gray-800';
     }
+    
+    // Calculate percentage of completion
+    if (totalCount === 0) return 0;
+    return Math.round((completedCount / totalCount) * 100);
   };
   
-  // Format date for tooltip
+  // Format date for tooltip display
   const formatDateForTooltip = (date: Date, status: number): string => {
     const dateStr = format(date, 'MMM d, yyyy');
-    if (status === 0) return `No habits completed on ${dateStr}`;
-    if (status === 4) return `All habits completed on ${dateStr}`;
-    return `Partially completed on ${dateStr}`;
+    if (status === 0) return `${dateStr}: No habits completed`;
+    if (status === 100) return `${dateStr}: All habits completed`;
+    return `${dateStr}: ${status}% completed`;
   };
   
   return (
-    <div className="w-full overflow-hidden">
-      <h3 className="text-base font-medium text-gray-700 mb-2">{title}</h3>
-      <div className="w-full overflow-x-auto pb-2">
-        <div className="flex flex-col">
-          {/* Month labels */}
-          {showMonths && (
-            <div className="flex text-xs text-gray-500 mb-1">
-              {Object.keys(datesByMonth).map((month, idx) => (
-                <div 
-                  key={`month-${idx}`} 
-                  className="flex-shrink-0" 
-                  style={{ width: `${datesByMonth[month].length * 15}px` }}
-                >
-                  {month}
-                </div>
-              ))}
-            </div>
-          )}
-          
-          {/* Contribution squares */}
-          <div className="flex">
-            {Object.entries(datesByMonth).map(([month, dates]) => (
-              <div key={`grid-${month}`} className="flex-shrink-0 flex">
-                {dates.map((date, idx) => {
-                  const status = getCompletionStatus(date);
-                  return (
-                    <TooltipProvider key={`day-${format(date, 'yyyy-MM-dd')}`}>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <div 
-                            className={`w-3 h-3 m-0.5 rounded-sm ${getColorClass(status)}`}
-                          />
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p>{formatDateForTooltip(date, status)}</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  );
-                })}
-              </div>
+    <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-6">
+      <h3 className="text-md font-semibold text-gray-700 mb-4">{title}</h3>
+      
+      <div className="overflow-x-auto">
+        <div className="flex">
+          {/* Day of week labels */}
+          <div className="flex flex-col mr-2">
+            <div className="h-5"></div> {/* Empty space for alignment */}
+            {daysOfWeek.map((day, i) => (
+              <div key={i} className="h-5 text-xs text-gray-500 pr-1 py-0.5">{day}</div>
             ))}
+          </div>
+          
+          {/* Contribution cells */}
+          <div className="flex">
+            {weeks.map((week, weekIndex) => {
+              const days = eachDayOfInterval({
+                start: week,
+                end: addDays(week, 6)
+              });
+              
+              return (
+                <div key={weekIndex} className="flex flex-col mr-1">
+                  {/* Month label */}
+                  {showMonths && weekIndex % 4 === 0 && (
+                    <div className="h-5 text-xs text-gray-500 text-center mb-1">
+                      {format(week, 'MMM')}
+                    </div>
+                  )}
+                  
+                  {/* Days */}
+                  {days.map((day, dayIndex) => {
+                    const completionStatus = getCompletionStatus(day);
+                    let bgColorClass = 'bg-gray-100'; // Default (no data)
+                    
+                    if (completionStatus > 0) {
+                      if (completionStatus < 25) bgColorClass = 'bg-emerald-100';
+                      else if (completionStatus < 50) bgColorClass = 'bg-emerald-200';
+                      else if (completionStatus < 75) bgColorClass = 'bg-emerald-300';
+                      else if (completionStatus < 100) bgColorClass = 'bg-emerald-400';
+                      else bgColorClass = 'bg-emerald-500';
+                    }
+                    
+                    return (
+                      <TooltipProvider key={dayIndex}>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <div 
+                              className={cn(
+                                "w-5 h-5 rounded-sm my-0.5", 
+                                bgColorClass,
+                                // If it's today, add a ring
+                                format(day, 'yyyy-MM-dd') === format(today, 'yyyy-MM-dd') && 
+                                "ring-2 ring-primary ring-offset-1"
+                              )}
+                            />
+                          </TooltipTrigger>
+                          <TooltipContent side="top">
+                            <p>{formatDateForTooltip(day, completionStatus)}</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    );
+                  })}
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>
       
-      {/* Legend */}
-      <div className="flex items-center justify-end mt-1 text-xs text-gray-500">
+      <div className="flex items-center justify-end mt-4 text-xs text-gray-500">
         <span className="mr-1">Less</span>
-        <div className={`w-3 h-3 mx-0.5 rounded-sm ${getColorClass(0)}`} />
-        <div className={`w-3 h-3 mx-0.5 rounded-sm ${getColorClass(1)}`} />
-        <div className={`w-3 h-3 mx-0.5 rounded-sm ${getColorClass(2)}`} />
-        <div className={`w-3 h-3 mx-0.5 rounded-sm ${getColorClass(3)}`} />
-        <div className={`w-3 h-3 mx-0.5 rounded-sm ${getColorClass(4)}`} />
+        <div className="flex items-center">
+          <div className="w-3 h-3 rounded-sm bg-gray-100 mr-0.5"></div>
+          <div className="w-3 h-3 rounded-sm bg-emerald-100 mr-0.5"></div>
+          <div className="w-3 h-3 rounded-sm bg-emerald-200 mr-0.5"></div>
+          <div className="w-3 h-3 rounded-sm bg-emerald-300 mr-0.5"></div>
+          <div className="w-3 h-3 rounded-sm bg-emerald-400 mr-0.5"></div>
+          <div className="w-3 h-3 rounded-sm bg-emerald-500"></div>
+        </div>
         <span className="ml-1">More</span>
       </div>
     </div>
