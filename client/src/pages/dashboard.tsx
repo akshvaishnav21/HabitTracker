@@ -99,25 +99,14 @@ const Dashboard: React.FC = () => {
               );
             })
           ) : (
-            <div id="no-habits" className="py-12 text-center bg-white rounded-lg border border-gray-200 shadow-sm">
-              <svg 
-                xmlns="http://www.w3.org/2000/svg" 
-                className="h-16 w-16 mx-auto text-gray-300 mb-4" 
-                fill="none" 
-                viewBox="0 0 24 24" 
-                stroke="currentColor"
-              >
-                <path 
-                  strokeLinecap="round" 
-                  strokeLinejoin="round" 
-                  strokeWidth="2" 
-                  d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" 
-                />
-              </svg>
-              <h3 className="text-lg font-medium text-gray-600 mb-2">No habits for today</h3>
-              <p className="text-gray-500 mb-6">Add your first habit to start tracking your progress</p>
+            <div id="no-habits" className="py-16 text-center bg-white rounded-xl border border-gray-200 shadow-sm">
+              <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6">
+                <Calendar className="h-10 w-10 text-primary" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-800 mb-3">No habits for today</h3>
+              <p className="text-gray-500 mb-8 max-w-md mx-auto">Start tracking your daily habits to build consistency and achieve your goals</p>
               <Link href="/habits/new">
-                <div className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary cursor-pointer">
+                <div className="inline-flex items-center px-5 py-2.5 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-primary hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary cursor-pointer transform transition-transform hover:scale-105">
                   <PlusIcon className="h-5 w-5 mr-2" />
                   Add Your First Habit
                 </div>
@@ -157,10 +146,13 @@ const Dashboard: React.FC = () => {
       </div>
 
       {/* All Habits */}
-      <div className="mb-8">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold text-gray-800">All Habits</h2>
-        </div>
+      <div className="mb-10">
+        <h2 className="text-xl font-bold text-gray-800 flex items-center mb-5">
+          <div className="h-8 w-8 rounded-full bg-gradient-warning mr-2 flex items-center justify-center shadow-sm">
+            <ListChecks className="h-4 w-4 text-white" />
+          </div>
+          All Habits
+        </h2>
         
         <HabitList habits={habits} onDelete={refreshData} />
       </div>
