@@ -150,15 +150,9 @@ const Dashboard: React.FC = () => {
       <div className="mb-8">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-semibold text-gray-800">All Habits</h2>
-          <Link href="/habits/new">
-            <div className="text-sm text-primary hover:text-indigo-700 flex items-center cursor-pointer">
-              <Settings className="h-4 w-4 mr-1" />
-              Manage
-            </div>
-          </Link>
         </div>
         
-        <HabitList habits={habits} />
+        <HabitList habits={habits} onDelete={refreshData} />
       </div>
       
       {/* Add Habit floating button */}

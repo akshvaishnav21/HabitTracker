@@ -209,56 +209,6 @@ const HabitForm: React.FC = () => {
             
             {watchFrequency === "custom" && (
               <div id="custom-frequency" className="space-y-4">
-                <FormLabel className="block text-sm font-medium text-gray-700 mb-1">Custom Frequency</FormLabel>
-                <div className="flex items-center">
-                  <FormField
-                    control={form.control}
-                    name="frequencyCount"
-                    render={({ field }) => (
-                      <FormItem className="w-16 mr-2">
-                        <FormControl>
-                          <Input 
-                            type="number" 
-                            min={1} 
-                            max={99} 
-                            {...field}
-                            value={field.value?.toString()}
-                            onChange={(e) => field.onChange(parseInt(e.target.value))}
-                            className="w-16 px-2 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  
-                  <span className="mr-2 text-gray-600">times</span>
-                  
-                  <FormField
-                    control={form.control}
-                    name="frequencyPeriod"
-                    render={({ field }) => (
-                      <FormItem className="flex-grow">
-                        <Select 
-                          onValueChange={field.onChange} 
-                          defaultValue={field.value}
-                        >
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select period" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            <SelectItem value="weekly">per week</SelectItem>
-                            <SelectItem value="monthly">per month</SelectItem>
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-                
                 <div>
                   <FormLabel className="block text-sm font-medium text-gray-700 mb-2">
                     Select Days

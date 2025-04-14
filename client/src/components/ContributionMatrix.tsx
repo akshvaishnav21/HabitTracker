@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Habit } from '@/lib/types';
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, eachWeekOfInterval, addDays, subMonths, getDay, getWeek, getYear } from 'date-fns';
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '@/components/ui/tooltip';
+import { Button } from '@/components/ui/button';
+import { ChevronDown, ChevronUp } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface ContributionMatrixProps {
@@ -15,6 +17,8 @@ const ContributionMatrix: React.FC<ContributionMatrixProps> = ({
   title, 
   frequency = 'daily'
 }) => {
+  const [showAll, setShowAll] = useState(false);
+  const maxHabitsInitially = 10;
   // Filter habits by frequency
   let filteredHabits = habits;
   if (frequency !== 'custom') {
@@ -83,53 +87,78 @@ const ContributionMatrix: React.FC<ContributionMatrixProps> = ({
               </tr>
             </thead>
             <tbody>
-              {filteredHabits.map((habit, habitIndex) => (
-                <tr key={habitIndex} className={habitIndex % 2 === 0 ? 'bg-gray-50' : ''}>
-                  <td className="px-2 py-2 text-sm font-medium text-gray-700 truncate">
-                    {habit.title}
-                  </td>
-                  
-                  {days.map((day, dayIndex) => {
-                    const dateStr = format(day, 'yyyy-MM-dd');
-                    const isCompleted = habit.history[dateStr];
-                    const shouldShow = shouldComplete(habit, day);
+              {filteredHabits
+                .slice(0, showAll ? undefined : maxHabitsInitially)
+                .map((habit, habitIndex) => (
+                  <tr key={habitIndex} className={habitIndex % 2 === 0 ? 'bg-gray-50' : ''}>
+                    <td className="px-2 py-2 text-sm font-medium text-gray-700 truncate">
+                      {habit.title}
+                    </td>
                     
-                    let bgColorClass = 'bg-gray-100'; // Default (not applicable)
-                    
-                    if (shouldShow) {
-                      bgColorClass = isCompleted ? 'bg-emerald-500' : 'bg-gray-200';
-                    }
-                    
-                    return (
-                      <td key={dayIndex} className="px-1 py-1 text-center">
-                        <TooltipProvider>
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <div className="mx-auto">
-                                <div 
-                                  className={cn(
-                                    "w-5 h-5 rounded-sm mx-auto", 
-                                    bgColorClass,
-                                    // If it's today, add a ring
-                                    format(day, 'yyyy-MM-dd') === format(today, 'yyyy-MM-dd') && 
-                                    "ring-2 ring-primary ring-offset-1"
-                                  )}
-                                />
-                              </div>
-                            </TooltipTrigger>
-                            <TooltipContent side="top">
-                              <p>{format(day, 'MMM d, yyyy')}: {isCompleted ? 'Completed' : 'Not completed'}</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </TooltipProvider>
-                      </td>
-                    );
-                  })}
-                </tr>
-              ))}
+                    {days.map((day, dayIndex) => {
+                      const dateStr = format(day, 'yyyy-MM-dd');
+                      const isCompleted = habit.history[dateStr];
+                      const shouldShow = shouldComplete(habit, day);
+                      
+                      let bgColorClass = 'bg-gray-100'; // Default (not applicable)
+                      
+                      if (shouldShow) {
+                        bgColorClass = isCompleted ? 'bg-emerald-500' : 'bg-gray-200';
+                      }
+                      
+                      return (
+                        <td key={dayIndex} className="px-1 py-1 text-center">
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <div className="mx-auto">
+                                  <div 
+                                    className={cn(
+                                      "w-5 h-5 rounded-sm mx-auto", 
+                                      bgColorClass,
+                                      // If it's today, add a ring
+                                      format(day, 'yyyy-MM-dd') === format(today, 'yyyy-MM-dd') && 
+                                      "ring-2 ring-primary ring-offset-1"
+                                    )}
+                                  />
+                                </div>
+                              </TooltipTrigger>
+                              <TooltipContent side="top">
+                                <p>{format(day, 'MMM d, yyyy')}: {isCompleted ? 'Completed' : 'Not completed'}</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                        </td>
+                      );
+                    })}
+                  </tr>
+                ))}
             </tbody>
           </table>
         </div>
+        
+        {filteredHabits.length > maxHabitsInitially && (
+          <div className="mt-4 text-center">
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={() => setShowAll(!showAll)}
+              className="text-sm"
+            >
+              {showAll ? (
+                <>
+                  <ChevronUp className="h-4 w-4 mr-1" />
+                  Show Less
+                </>
+              ) : (
+                <>
+                  <ChevronDown className="h-4 w-4 mr-1" />
+                  Show All {filteredHabits.length} Habits
+                </>
+              )}
+            </Button>
+          </div>
+        )}
         
         <div className="flex items-center justify-end mt-4 text-xs text-gray-500">
           <span className="mr-2">Not Applicable</span>
@@ -180,48 +209,73 @@ const ContributionMatrix: React.FC<ContributionMatrixProps> = ({
               </tr>
             </thead>
             <tbody>
-              {filteredHabits.map((habit, habitIndex) => (
-                <tr key={habitIndex} className={habitIndex % 2 === 0 ? 'bg-gray-50' : ''}>
-                  <td className="px-2 py-2 text-sm font-medium text-gray-700 truncate">
-                    {habit.title}
-                  </td>
-                  
-                  {Array.from({ length: weeksToShow }).map((_, i) => {
-                    // Get date for the Monday of this week
-                    const weekOffset = i - (weeksToShow - 1);
-                    const monday = addDays(today, -getDay(today) + 1 + (weekOffset * 7));
-                    const dateStr = format(monday, 'yyyy-MM-dd');
-                    const isCompleted = habit.history[dateStr];
+              {filteredHabits
+                .slice(0, showAll ? undefined : maxHabitsInitially)
+                .map((habit, habitIndex) => (
+                  <tr key={habitIndex} className={habitIndex % 2 === 0 ? 'bg-gray-50' : ''}>
+                    <td className="px-2 py-2 text-sm font-medium text-gray-700 truncate">
+                      {habit.title}
+                    </td>
                     
-                    let bgColorClass = isCompleted ? 'bg-emerald-500' : 'bg-gray-200';
-                    
-                    return (
-                      <td key={i} className="px-1 py-1 text-center">
-                        <TooltipProvider>
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <div className="mx-auto">
-                                <div 
-                                  className={cn(
-                                    "w-5 h-5 rounded-sm mx-auto", 
-                                    bgColorClass
-                                  )}
-                                />
-                              </div>
-                            </TooltipTrigger>
-                            <TooltipContent side="top">
-                              <p>Week of {format(monday, 'MMM d, yyyy')}: {isCompleted ? 'Completed' : 'Not completed'}</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </TooltipProvider>
-                      </td>
-                    );
-                  }).reverse()}
-                </tr>
-              ))}
+                    {Array.from({ length: weeksToShow }).map((_, i) => {
+                      // Get date for the Monday of this week
+                      const weekOffset = i - (weeksToShow - 1);
+                      const monday = addDays(today, -getDay(today) + 1 + (weekOffset * 7));
+                      const dateStr = format(monday, 'yyyy-MM-dd');
+                      const isCompleted = habit.history[dateStr];
+                      
+                      let bgColorClass = isCompleted ? 'bg-emerald-500' : 'bg-gray-200';
+                      
+                      return (
+                        <td key={i} className="px-1 py-1 text-center">
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <div className="mx-auto">
+                                  <div 
+                                    className={cn(
+                                      "w-5 h-5 rounded-sm mx-auto", 
+                                      bgColorClass
+                                    )}
+                                  />
+                                </div>
+                              </TooltipTrigger>
+                              <TooltipContent side="top">
+                                <p>Week of {format(monday, 'MMM d, yyyy')}: {isCompleted ? 'Completed' : 'Not completed'}</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                        </td>
+                      );
+                    }).reverse()}
+                  </tr>
+                ))}
             </tbody>
           </table>
         </div>
+        
+        {filteredHabits.length > maxHabitsInitially && (
+          <div className="mt-4 text-center">
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={() => setShowAll(!showAll)}
+              className="text-sm"
+            >
+              {showAll ? (
+                <>
+                  <ChevronUp className="h-4 w-4 mr-1" />
+                  Show Less
+                </>
+              ) : (
+                <>
+                  <ChevronDown className="h-4 w-4 mr-1" />
+                  Show All {filteredHabits.length} Habits
+                </>
+              )}
+            </Button>
+          </div>
+        )}
         
         <div className="flex items-center justify-end mt-4 text-xs text-gray-500">
           <span className="mr-2">Not Completed</span>
