@@ -10,10 +10,13 @@ import AddHabitButton from "@/components/AddHabitButton";
 import IntroductionModal from "@/components/IntroductionModal";
 import { loadHabits } from "@/lib/habitStore";
 import { useReminders, initializeReminderSystem } from "@/hooks/use-reminders";
+import NotificationPermission from "@/components/NotificationPermission";
 
 function App() {
   const [location, setLocation] = useLocation();
   const [showIntro, setShowIntro] = useState(false);
+  
+  const { isNotificationSupported, permissionGranted } = useReminders();
   
   useEffect(() => {
     // Check if this is the first visit
@@ -28,6 +31,14 @@ function App() {
     if (!habits || habits.length === 0) {
       // The store will initialize with empty array when loading
     }
+    
+    // Initialize reminder system
+    const cleanupReminders = initializeReminderSystem();
+    
+    // Clean up on unmount
+    return () => {
+      cleanupReminders();
+    };
   }, []);
 
   return (
@@ -46,6 +57,8 @@ function App() {
       {location === "/" && <AddHabitButton />}
       
       {showIntro && <IntroductionModal onClose={() => setShowIntro(false)} />}
+      
+      <NotificationPermission />
       
       <Toaster />
     </>
