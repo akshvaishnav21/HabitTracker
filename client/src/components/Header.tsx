@@ -1,14 +1,32 @@
 import { formatDate, calculateHabitStats } from "@/lib/utils";
 import { Link } from "wouter";
-import { Download } from "lucide-react";
+import { Download, Clock } from "lucide-react";
 import { loadHabits } from "@/lib/habitStore";
 import { useToast } from "@/hooks/use-toast";
 import { getTodayISODate } from "@/lib/utils";
+import { useState, useEffect } from "react";
 
 const Header = () => {
+  const [currentTime, setCurrentTime] = useState('');
   const today = new Date();
   const formattedDate = formatDate(today);
   const { toast } = useToast();
+  
+  // Update time every second
+  useEffect(() => {
+    const updateTime = () => {
+      const now = new Date();
+      const hours = now.getHours().toString().padStart(2, '0');
+      const minutes = now.getMinutes().toString().padStart(2, '0');
+      const seconds = now.getSeconds().toString().padStart(2, '0');
+      setCurrentTime(`${hours}:${minutes}:${seconds}`);
+    };
+    
+    updateTime(); // Initial call
+    const timerId = setInterval(updateTime, 1000);
+    
+    return () => clearInterval(timerId);
+  }, []);
 
   const exportToCsv = () => {
     try {
@@ -78,11 +96,11 @@ const Header = () => {
   };
 
   return (
-    <header className="sticky top-0 z-10 bg-primary text-white shadow-md">
+    <header className="sticky top-0 z-10 bg-primary text-white shadow-lg">
       <div className="container mx-auto px-4 py-3 flex items-center justify-between">
         <Link href="/">
           <div className="flex items-center space-x-2 cursor-pointer">
-            <div className="h-8 w-8 rounded-full bg-white/20 flex items-center justify-center">
+            <div className="h-9 w-9 rounded-full bg-white/20 flex items-center justify-center">
               <svg 
                 xmlns="http://www.w3.org/2000/svg" 
                 className="h-5 w-5 text-white" 
@@ -100,7 +118,11 @@ const Header = () => {
           </div>
         </Link>
         <div className="flex items-center">
-          <div className="text-sm text-white mr-3 hidden sm:block font-medium px-3 py-1">
+          <div className="flex items-center mr-4 bg-white/10 rounded-full px-4 py-1.5 backdrop-blur-sm hidden sm:flex">
+            <Clock className="h-4 w-4 mr-2 text-white/80" />
+            <span className="text-sm font-medium text-white">{currentTime}</span>
+          </div>
+          <div className="bg-white/10 text-sm text-white mr-3 hidden sm:block font-medium px-4 py-1.5 rounded-full backdrop-blur-sm">
             {formattedDate}
           </div>
           <button 

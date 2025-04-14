@@ -74,9 +74,9 @@ const HabitDetails: React.FC = () => {
     <div id="habit-detail-view">
       <div className="flex items-center mb-4">
         <Link href="/">
-          <a className="p-2 -ml-2 text-gray-600 hover:text-gray-900 rounded-full hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
+          <div className="p-2 -ml-2 text-gray-600 hover:text-gray-900 rounded-full hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 cursor-pointer">
             <ArrowLeft className="h-5 w-5" />
-          </a>
+          </div>
         </Link>
         <h2 className="text-lg font-semibold text-gray-800 ml-1">Habit Details</h2>
       </div>
@@ -98,9 +98,9 @@ const HabitDetails: React.FC = () => {
           </div>
           <div className="flex">
             <Link href={`/habits/${habit.id}/edit`}>
-              <a className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full mr-1">
+              <div className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full mr-1 cursor-pointer">
                 <Edit3 className="h-5 w-5" />
-              </a>
+              </div>
             </Link>
             <button 
               className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-full"
