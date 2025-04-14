@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Habit } from '@/lib/types';
-import { format, startOfMonth, endOfMonth, eachDayOfInterval, eachWeekOfInterval, addDays, subMonths, getDay, getWeek, getYear } from 'date-fns';
+import { format, startOfMonth, endOfMonth, eachDayOfInterval, eachWeekOfInterval, addDays, subMonths, getDay, getWeek, getYear, addWeeks } from 'date-fns';
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '@/components/ui/tooltip';
 import { Button } from '@/components/ui/button';
 import { ChevronDown, ChevronUp } from 'lucide-react';
@@ -31,7 +31,7 @@ const ContributionMatrix: React.FC<ContributionMatrixProps> = ({
   if (filteredHabits.length === 0) {
     return (
       <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-6 w-full">
-        <h3 className="text-md font-semibold text-gray-700 mb-4">{title}</h3>
+        <h3 className="text-lg font-semibold text-gray-800 mb-4 bg-gradient-to-r from-primary/80 to-primary bg-clip-text text-transparent">{title}</h3>
         <div className="text-center py-8 text-gray-500">
           No {frequency} habits to display
         </div>
@@ -67,7 +67,7 @@ const ContributionMatrix: React.FC<ContributionMatrixProps> = ({
     
     return (
       <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-6 w-full">
-        <h3 className="text-md font-semibold text-gray-700 mb-4">{title}</h3>
+        <h3 className="text-lg font-semibold text-gray-800 mb-4 bg-gradient-to-r from-primary/80 to-primary bg-clip-text text-transparent">{title}</h3>
         
         <div className="overflow-x-auto">
           <table className="w-full">
@@ -91,8 +91,10 @@ const ContributionMatrix: React.FC<ContributionMatrixProps> = ({
                 .slice(0, showAll ? undefined : maxHabitsInitially)
                 .map((habit, habitIndex) => (
                   <tr key={habitIndex} className={habitIndex % 2 === 0 ? 'bg-gray-50' : ''}>
-                    <td className="px-2 py-2 text-sm font-medium text-gray-700 truncate">
-                      {habit.title}
+                    <td className="px-2 py-2 text-sm font-medium text-gray-700">
+                      <div className="max-w-[180px] truncate" title={habit.title}>
+                        {habit.title}
+                      </div>
                     </td>
                     
                     {days.map((day, dayIndex) => {
@@ -180,7 +182,7 @@ const ContributionMatrix: React.FC<ContributionMatrixProps> = ({
     
     return (
       <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-6 w-full">
-        <h3 className="text-md font-semibold text-gray-700 mb-4">{title}</h3>
+        <h3 className="text-lg font-semibold text-gray-800 mb-4 bg-gradient-to-r from-primary/80 to-primary bg-clip-text text-transparent">{title}</h3>
         
         <div className="overflow-x-auto">
           <table className="w-full">
@@ -195,10 +197,19 @@ const ContributionMatrix: React.FC<ContributionMatrixProps> = ({
                     weekNum = 52 + weekNum; // Wrap to previous year
                     yearNum--;
                   }
+                  
+                  // Calculate the date range for this week (Monday - Sunday)
+                  const weekOffset = i - (weeksToShow - 1);
+                  const monday = addDays(today, -getDay(today) + 1 + (weekOffset * 7));
+                  const sunday = addDays(monday, 6);
+                  
+                  // Format: "16-22 Mar"
+                  const dateRangeText = `${format(monday, 'd')}-${format(sunday, 'd')} ${format(monday, 'MMM')}`;
+                  
                   return (
                     <th key={i} className="px-1 py-1 text-center">
                       <div className="text-xs font-medium text-gray-500">
-                        Week {weekNum}
+                        {dateRangeText}
                       </div>
                       <div className="text-[10px] text-gray-400">
                         {yearNum}
@@ -213,8 +224,10 @@ const ContributionMatrix: React.FC<ContributionMatrixProps> = ({
                 .slice(0, showAll ? undefined : maxHabitsInitially)
                 .map((habit, habitIndex) => (
                   <tr key={habitIndex} className={habitIndex % 2 === 0 ? 'bg-gray-50' : ''}>
-                    <td className="px-2 py-2 text-sm font-medium text-gray-700 truncate">
-                      {habit.title}
+                    <td className="px-2 py-2 text-sm font-medium text-gray-700">
+                      <div className="max-w-[180px] truncate" title={habit.title}>
+                        {habit.title}
+                      </div>
                     </td>
                     
                     {Array.from({ length: weeksToShow }).map((_, i) => {
