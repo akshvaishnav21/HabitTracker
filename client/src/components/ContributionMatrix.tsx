@@ -231,8 +231,19 @@ const ContributionMatrix: React.FC<ContributionMatrixProps> = ({
                       // Get date for the Monday of this week
                       const weekOffset = i - (weeksToShow - 1);
                       const monday = addDays(today, -getDay(today) + 1 + (weekOffset * 7));
-                      const dateStr = format(monday, 'yyyy-MM-dd');
-                      const isCompleted = habit.history[dateStr];
+                      
+                      // Check for completions throughout the week rather than just Monday
+                      let isCompleted = false;
+                      
+                      // Check each day of the week for this habit
+                      for (let day = 0; day < 7; day++) {
+                        const dayDate = addDays(monday, day);
+                        const dayDateStr = format(dayDate, 'yyyy-MM-dd');
+                        if (habit.history[dayDateStr]) {
+                          isCompleted = true;
+                          break;
+                        }
+                      }
                       
                       let bgColorClass = isCompleted ? 'bg-emerald-500' : 'bg-gray-200';
                       
@@ -257,7 +268,7 @@ const ContributionMatrix: React.FC<ContributionMatrixProps> = ({
                           </TooltipProvider>
                         </td>
                       );
-                    }).reverse()}
+                    })}
                   </tr>
                 ))}
             </tbody>
