@@ -1,18 +1,19 @@
 import { formatDate } from "@/lib/utils";
 import { Link } from "wouter";
+import { Menu } from "lucide-react";
 
 const Header = () => {
   const today = new Date();
   const formattedDate = formatDate(today);
 
   return (
-    <header className="sticky top-0 z-10 bg-white border-b border-gray-200 shadow-sm">
+    <header className="sticky top-0 z-10 bg-primary text-white shadow-md">
       <div className="container mx-auto px-4 py-3 flex items-center justify-between">
         <Link href="/">
-          <a className="flex items-center space-x-2">
+          <div className="flex items-center space-x-2 cursor-pointer">
             <svg 
               xmlns="http://www.w3.org/2000/svg" 
-              className="h-6 w-6 text-primary" 
+              className="h-6 w-6 text-white" 
               viewBox="0 0 20 20" 
               fill="currentColor"
             >
@@ -22,28 +23,15 @@ const Header = () => {
                 clipRule="evenodd" 
               />
             </svg>
-            <h1 className="text-xl font-bold text-gray-800">HabitTrack</h1>
-          </a>
+            <h1 className="text-xl font-bold text-white">HabitTrack</h1>
+          </div>
         </Link>
         <div className="flex items-center">
-          <div className="text-sm text-gray-600 mr-2 hidden sm:block">
+          <div className="text-sm text-white mr-3 hidden sm:block">
             {formattedDate}
           </div>
-          <button className="p-2 rounded-full hover:bg-gray-100 text-gray-600">
-            <svg 
-              xmlns="http://www.w3.org/2000/svg" 
-              className="h-5 w-5" 
-              fill="none" 
-              viewBox="0 0 24 24" 
-              stroke="currentColor"
-            >
-              <path 
-                strokeLinecap="round" 
-                strokeLinejoin="round" 
-                strokeWidth="2" 
-                d="M4 6h16M4 12h16M4 18h7" 
-              />
-            </svg>
+          <button className="p-2 rounded-full hover:bg-primary-600 text-white flex items-center justify-center">
+            <Menu className="h-5 w-5" />
           </button>
         </div>
       </div>

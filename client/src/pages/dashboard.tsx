@@ -1,20 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { formatShortDate, calculateDailyProgress, calculateWeeklyProgress, getTodayISODate } from '@/lib/utils';
 import { loadHabits, getBestStreak } from '@/lib/habitStore';
-import { Habit } from '@/lib/types';
+import { Habit, WeeklyProgress as WeeklyProgressType } from '@/lib/types';
 
 import StatCard from '@/components/StatCard';
 import HabitCard from '@/components/HabitCard';
 import WeeklyProgress from '@/components/WeeklyProgress';
 import HabitList from '@/components/HabitList';
 import { Link } from 'wouter';
-import { Settings } from 'lucide-react';
+import { Settings, PlusIcon } from 'lucide-react';
+import AddHabitButton from '@/components/AddHabitButton';
 
 const Dashboard: React.FC = () => {
   const [habits, setHabits] = useState<Habit[]>([]);
   const [todayHabits, setTodayHabits] = useState<Habit[]>([]);
   const [todayProgress, setTodayProgress] = useState({ total: 0, completed: 0, percentage: 0 });
-  const [weeklyProgress, setWeeklyProgress] = useState({ 
+  const [weeklyProgress, setWeeklyProgress] = useState<WeeklyProgressType>({ 
     days: [], 
     percentage: 0 
   });
@@ -50,15 +51,25 @@ const Dashboard: React.FC = () => {
   return (
     <div id="dashboard-view">
       {/* Stats Overview */}
-      <div className="mb-6 grid grid-cols-2 sm:grid-cols-4 gap-3">
-        <StatCard title="Total Habits" value={habits.length} />
+      <div className="mb-6 grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <StatCard title="Total Habits" value={habits.length} icon="habits" />
         <StatCard 
           title="Today's Progress" 
           value={`${todayProgress.completed}/${todayProgress.total}`} 
-          suffix={`${todayProgress.percentage}%`} 
+          suffix={`${todayProgress.percentage}%`}
+          icon="progress"
         />
-        <StatCard title="Best Streak" value={bestStreak} suffix="days" />
-        <StatCard title="Week Completion" value={`${weeklyProgress.percentage}%`} />
+        <StatCard 
+          title="Best Streak" 
+          value={bestStreak} 
+          suffix="days" 
+          icon="streak"
+        />
+        <StatCard 
+          title="Week Completion" 
+          value={`${weeklyProgress.percentage}%`} 
+          icon="completion"
+        />
       </div>
 
       {/* Today's Habits */}
@@ -68,7 +79,7 @@ const Dashboard: React.FC = () => {
           <div className="text-sm text-gray-500">{formattedToday}</div>
         </div>
         
-        <div className="space-y-3">
+        <div className="space-y-4">
           {todayHabits.length > 0 ? (
             todayHabits.map(habit => {
               const isCompleted = Boolean(habit.history[getTodayISODate()]);
@@ -82,7 +93,7 @@ const Dashboard: React.FC = () => {
               );
             })
           ) : (
-            <div id="no-habits" className="py-12 text-center">
+            <div id="no-habits" className="py-12 text-center bg-white rounded-lg border border-gray-200 shadow-sm">
               <svg 
                 xmlns="http://www.w3.org/2000/svg" 
                 className="h-16 w-16 mx-auto text-gray-300 mb-4" 
@@ -100,21 +111,10 @@ const Dashboard: React.FC = () => {
               <h3 className="text-lg font-medium text-gray-600 mb-2">No habits for today</h3>
               <p className="text-gray-500 mb-6">Add your first habit to start tracking your progress</p>
               <Link href="/habits/new">
-                <a className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
-                  <svg 
-                    xmlns="http://www.w3.org/2000/svg" 
-                    className="h-5 w-5 mr-2" 
-                    viewBox="0 0 20 20" 
-                    fill="currentColor"
-                  >
-                    <path 
-                      fillRule="evenodd" 
-                      d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" 
-                      clipRule="evenodd" 
-                    />
-                  </svg>
+                <div className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary cursor-pointer">
+                  <PlusIcon className="h-5 w-5 mr-2" />
                   Add Your First Habit
-                </a>
+                </div>
               </Link>
             </div>
           )}
@@ -139,6 +139,9 @@ const Dashboard: React.FC = () => {
         
         <HabitList habits={habits} />
       </div>
+      
+      {/* Add Habit floating button */}
+      <AddHabitButton />
     </div>
   );
 };
