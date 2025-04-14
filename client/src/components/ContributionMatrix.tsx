@@ -190,18 +190,15 @@ const ContributionMatrix: React.FC<ContributionMatrixProps> = ({
               <tr>
                 <th className="w-[200px] px-2 py-1 text-left text-xs font-medium text-gray-500">Habit</th>
                 {Array.from({ length: weeksToShow }).map((_, i) => {
-                  // Calculate week number (handle year boundary)
-                  let weekNum = currentWeekNumber - i;
-                  let yearNum = currentYear;
-                  if (weekNum <= 0) {
-                    weekNum = 52 + weekNum; // Wrap to previous year
-                    yearNum--;
-                  }
-                  
                   // Calculate the date range for this week (Monday - Sunday)
+                  // Instead of going backwards, let's calculate weeks going forward
+                  // We'll start with dates from weeksToShow-1 weeks ago and go forward
                   const weekOffset = i - (weeksToShow - 1);
                   const monday = addDays(today, -getDay(today) + 1 + (weekOffset * 7));
                   const sunday = addDays(monday, 6);
+                  
+                  // Get the year for display
+                  const yearNum = getYear(monday);
                   
                   // Format: "16-22 Mar"
                   const dateRangeText = `${format(monday, 'd')}-${format(sunday, 'd')} ${format(monday, 'MMM')}`;
@@ -216,7 +213,7 @@ const ContributionMatrix: React.FC<ContributionMatrixProps> = ({
                       </div>
                     </th>
                   );
-                }).reverse()}
+                })}
               </tr>
             </thead>
             <tbody>

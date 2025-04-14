@@ -10,31 +10,48 @@ interface StatCardProps {
 }
 
 const StatCard: React.FC<StatCardProps> = ({ title, value, suffix, icon }) => {
-  const getIcon = () => {
+  const getIconAndColor = () => {
     switch (icon) {
       case 'habits':
-        return <Calendar className="h-4 w-4 text-primary" />;
+        return { 
+          icon: <Calendar className="h-5 w-5 text-white" />,
+          bgColor: 'bg-primary' // Blue
+        };
       case 'progress':
-        return <CheckCircle className="h-4 w-4 text-green-500" />;
+        return { 
+          icon: <CheckCircle className="h-5 w-5 text-white" />,
+          bgColor: 'bg-[#00C853]' // Green
+        };
       case 'streak':
-        return <TrendingUp className="h-4 w-4 text-amber-500" />;
+        return { 
+          icon: <TrendingUp className="h-5 w-5 text-white" />,
+          bgColor: 'bg-[#FF9800]' // Orange
+        };
       case 'completion':
-        return <BarChart2 className="h-4 w-4 text-indigo-500" />;
+        return { 
+          icon: <BarChart2 className="h-5 w-5 text-white" />,
+          bgColor: 'bg-[#9C27B0]' // Purple
+        };
       default:
-        return null;
+        return { 
+          icon: null,
+          bgColor: 'bg-white'
+        };
     }
   };
 
+  const { icon: iconElement, bgColor } = getIconAndColor();
+
   return (
-    <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+    <div className={`p-5 rounded-lg shadow-sm ${bgColor} text-white hover:shadow-md transition-shadow`}>
       <div className="flex items-center justify-between">
-        <div className="text-sm font-medium text-gray-600 mb-1">{title}</div>
-        {getIcon()}
+        <div className="text-sm font-medium mb-1">{title}</div>
+        {iconElement}
       </div>
       <div className="flex items-baseline mt-2">
-        <div className="text-2xl font-bold text-gray-800">{value}</div>
+        <div className="text-2xl font-bold">{value}</div>
         {suffix && (
-          <div className="text-sm text-gray-500 ml-2">{suffix}</div>
+          <div className="text-sm text-white/80 ml-2">{suffix}</div>
         )}
       </div>
     </div>

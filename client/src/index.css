@@ -18,19 +18,23 @@
 
 /* Custom colorful gradient backgrounds */
 .bg-gradient-primary {
-  @apply bg-gradient-to-r from-purple-600 to-violet-500;
+  @apply bg-gradient-to-r from-blue-700 to-blue-600;
+  background-color: #3737FF;
 }
 
 .bg-gradient-success {
-  @apply bg-gradient-to-r from-emerald-500 to-teal-400;
+  @apply bg-gradient-to-r from-green-500 to-green-400;
+  background-color: #00C853;
 }
 
 .bg-gradient-warning {
-  @apply bg-gradient-to-r from-amber-500 to-yellow-400;
+  @apply bg-gradient-to-r from-orange-500 to-amber-400;
+  background-color: #FF9800;
 }
 
 .bg-gradient-danger {
-  @apply bg-gradient-to-r from-red-500 to-rose-400;
+  @apply bg-gradient-to-r from-red-600 to-rose-500;
+  background-color: #F44336;
 }
 
 /* Colorful card designs */
