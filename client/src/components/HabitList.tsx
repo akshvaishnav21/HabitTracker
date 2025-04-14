@@ -1,15 +1,49 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'wouter';
 import { Habit } from '@/lib/types';
 import { calculateHabitStats } from '@/lib/utils';
 import { Progress } from '@/components/ui/progress';
-import { EyeIcon, Edit2Icon, PlusIcon } from 'lucide-react';
+import { EyeIcon, Edit2Icon, PlusIcon, Trash2Icon } from 'lucide-react';
+import { 
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { deleteHabit } from '@/lib/habitStore';
+import { useToast } from '@/hooks/use-toast';
 
 interface HabitListProps {
   habits: Habit[];
+  onDelete?: () => void;
 }
 
-const HabitList: React.FC<HabitListProps> = ({ habits }) => {
+const HabitList: React.FC<HabitListProps> = ({ habits, onDelete }) => {
+  const { toast } = useToast();
+  
+  const handleDeleteHabit = (id: string) => {
+    try {
+      deleteHabit(id);
+      toast({
+        title: "Success",
+        description: "Habit deleted successfully",
+      });
+      if (onDelete) {
+        onDelete();
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to delete habit",
+        variant: "destructive",
+      });
+    }
+  };
   if (habits.length === 0) {
     return (
       <div id="no-habits" className="py-12 text-center bg-white rounded-lg border border-gray-200 shadow-sm">
@@ -90,6 +124,27 @@ const HabitList: React.FC<HabitListProps> = ({ habits }) => {
                     <Edit2Icon className="h-5 w-5" />
                   </div>
                 </Link>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <div className="p-2 text-gray-400 hover:text-red-600 hover:bg-gray-100 rounded-full cursor-pointer">
+                      <Trash2Icon className="h-5 w-5" />
+                    </div>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Delete Habit</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        Are you sure you want to delete this habit? This action cannot be undone.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction onClick={() => handleDeleteHabit(habit.id)} className="bg-red-500 hover:bg-red-600">
+                        Delete
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
               </div>
             </div>
           </div>

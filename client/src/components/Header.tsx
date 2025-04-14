@@ -1,10 +1,67 @@
 import { formatDate } from "@/lib/utils";
 import { Link } from "wouter";
-import { Menu } from "lucide-react";
+import { Download } from "lucide-react";
+import { loadHabits } from "@/lib/habitStore";
+import { useToast } from "@/hooks/use-toast";
 
 const Header = () => {
   const today = new Date();
   const formattedDate = formatDate(today);
+  const { toast } = useToast();
+
+  const exportToCsv = () => {
+    try {
+      const habits = loadHabits();
+      if (habits.length === 0) {
+        toast({
+          title: "No habits to export",
+          description: "Create some habits first before exporting",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Convert habits to CSV format
+      let csvContent = "id,title,description,frequency,frequencyCount,frequencyPeriod,selectedDays,createdAt\n";
+      
+      habits.forEach(habit => {
+        // Format the habit data for CSV
+        const row = [
+          habit.id,
+          `"${habit.title.replace(/"/g, '""')}"`, // Escape quotes
+          `"${(habit.description || '').replace(/"/g, '""')}"`,
+          habit.frequency,
+          habit.frequencyCount || '',
+          habit.frequencyPeriod || '',
+          habit.selectedDays ? `"${habit.selectedDays.join(',')}"` : '',
+          habit.createdAt
+        ];
+        csvContent += row.join(',') + '\n';
+      });
+      
+      // Create and download CSV file
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.setAttribute('href', url);
+      link.setAttribute('download', `habit-track-export-${today.toISOString().slice(0, 10)}.csv`);
+      link.style.display = 'none';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      toast({
+        title: "Export successful",
+        description: "Your habit data has been exported to CSV",
+      });
+    } catch (error) {
+      toast({
+        title: "Export failed",
+        description: "There was an error exporting your data",
+        variant: "destructive",
+      });
+    }
+  };
 
   return (
     <header className="sticky top-0 z-10 bg-primary text-white shadow-md">
@@ -30,8 +87,12 @@ const Header = () => {
           <div className="text-sm text-white mr-3 hidden sm:block">
             {formattedDate}
           </div>
-          <button className="p-2 rounded-full hover:bg-primary-600 text-white flex items-center justify-center">
-            <Menu className="h-5 w-5" />
+          <button 
+            className="p-2 rounded-full hover:bg-primary-600 text-white flex items-center justify-center"
+            onClick={exportToCsv}
+            title="Export habits to CSV"
+          >
+            <Download className="h-5 w-5" />
           </button>
         </div>
       </div>
