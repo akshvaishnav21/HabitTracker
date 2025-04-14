@@ -1,5 +1,6 @@
 export type HabitFrequency = 'daily' | 'weekly' | 'custom';
 export type FrequencyPeriod = 'weekly' | 'monthly';
+export type DayOfWeek = 'mon' | 'tue' | 'wed' | 'thu' | 'fri' | 'sat' | 'sun';
 
 export interface HabitHistory {
   [date: string]: boolean;
@@ -12,6 +13,7 @@ export interface Habit {
   frequency: HabitFrequency;
   frequencyCount?: number;
   frequencyPeriod?: FrequencyPeriod;
+  selectedDays?: DayOfWeek[];
   reminderEnabled?: boolean;
   reminderTime?: string;
   createdAt: string;
@@ -24,6 +26,7 @@ export interface HabitFormData {
   frequency: HabitFrequency;
   frequencyCount?: number;
   frequencyPeriod?: FrequencyPeriod;
+  selectedDays?: DayOfWeek[];
   reminderEnabled?: boolean;
   reminderTime?: string;
 }

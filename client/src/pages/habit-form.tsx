@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { ArrowLeft } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { Habit, HabitFormData } from '@/lib/types';
+import { Habit, HabitFormData, DayOfWeek } from '@/lib/types';
 import { getHabit, createHabit, updateHabit } from '@/lib/habitStore';
 
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
@@ -23,6 +23,7 @@ const formSchema = z.object({
   frequency: z.enum(["daily", "weekly", "custom"]),
   frequencyCount: z.number().min(1).max(99).optional(),
   frequencyPeriod: z.enum(["weekly", "monthly"]).optional(),
+  selectedDays: z.array(z.enum(["mon", "tue", "wed", "thu", "fri", "sat", "sun"])).optional(),
   reminderEnabled: z.boolean().default(false),
   reminderTime: z.string().optional()
 });
@@ -42,6 +43,7 @@ const HabitForm: React.FC = () => {
       frequency: "daily",
       frequencyCount: 1,
       frequencyPeriod: "weekly",
+      selectedDays: ["mon", "tue", "wed", "thu", "fri"],
       reminderEnabled: false,
       reminderTime: "08:00"
     }
@@ -61,6 +63,7 @@ const HabitForm: React.FC = () => {
           frequency: habit.frequency,
           frequencyCount: habit.frequencyCount,
           frequencyPeriod: habit.frequencyPeriod,
+          selectedDays: habit.selectedDays || ["mon", "tue", "wed", "thu", "fri"],
           reminderEnabled: habit.reminderEnabled,
           reminderTime: habit.reminderTime
         });
@@ -104,9 +107,9 @@ const HabitForm: React.FC = () => {
     <div id="habit-form-view">
       <div className="flex items-center mb-4">
         <Link href="/">
-          <a className="p-2 -ml-2 text-gray-600 hover:text-gray-900 rounded-full hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
+          <div className="p-2 -ml-2 text-gray-600 hover:text-gray-900 rounded-full hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 cursor-pointer">
             <ArrowLeft className="h-5 w-5" />
-          </a>
+          </div>
         </Link>
         <h2 className="text-lg font-semibold text-gray-800 ml-1">
           {isEditing ? "Edit Habit" : "Add New Habit"}
@@ -205,7 +208,7 @@ const HabitForm: React.FC = () => {
             />
             
             {watchFrequency === "custom" && (
-              <div id="custom-frequency">
+              <div id="custom-frequency" className="space-y-4">
                 <FormLabel className="block text-sm font-medium text-gray-700 mb-1">Custom Frequency</FormLabel>
                 <div className="flex items-center">
                   <FormField
@@ -254,6 +257,52 @@ const HabitForm: React.FC = () => {
                       </FormItem>
                     )}
                   />
+                </div>
+                
+                <div>
+                  <FormLabel className="block text-sm font-medium text-gray-700 mb-2">
+                    Select Days
+                  </FormLabel>
+                  <FormField
+                    control={form.control}
+                    name="selectedDays"
+                    render={({ field }) => (
+                      <FormItem>
+                        <div className="grid grid-cols-7 gap-2">
+                          {['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'].map((day) => {
+                            const isSelected = field.value?.includes(day as DayOfWeek);
+                            return (
+                              <div 
+                                key={day}
+                                className={`flex flex-col items-center justify-center py-2 px-1 rounded-md cursor-pointer border ${
+                                  isSelected 
+                                    ? 'border-primary bg-primary/10 text-primary' 
+                                    : 'border-gray-300 hover:border-gray-400'
+                                }`}
+                                onClick={() => {
+                                  const currentValue = field.value || [];
+                                  if (isSelected) {
+                                    // Remove day
+                                    field.onChange(currentValue.filter(d => d !== day));
+                                  } else {
+                                    // Add day
+                                    field.onChange([...currentValue, day as DayOfWeek]);
+                                  }
+                                }}
+                              >
+                                <span className="text-xs font-semibold uppercase">{day.substring(0, 1)}</span>
+                                <span className="text-xs mt-1 capitalize">{day}</span>
+                              </div>
+                            );
+                          })}
+                        </div>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <div className="text-xs text-gray-500 mt-2">
+                    Select the days when you want to perform this habit.
+                  </div>
                 </div>
               </div>
             )}
