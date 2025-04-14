@@ -1,0 +1,96 @@
+ Color Palette and Theming
+Primary Color: A bright, friendly indigo or teal (#4F46E5 or #14B8A6)
+
+Used for the header background, button highlights, and key accent elements (like the “+ Add Habit” button).
+
+Secondary Color: A complementary purple or lighter teal (#6366F1 or #5EEAD4)
+
+Used for badges, progress bars, or hover states.
+
+Success/Completion: A vibrant green (#22C55E)
+
+Used for checkmarks, completed items, streak indicators.
+
+Warning/Partial Completion: A yellow or orange (#FACC15 or #F97316)
+
+Used for partial completion or “in-progress” states.
+
+Danger/Uncompleted: A red (#EF4444)
+
+Used sparingly, only to indicate missed habits or reset streak.
+
+Background: Light neutral gray or off-white (#F3F4F6) for sections, with pure white (#FFFFFF) cards for content blocks.
+
+Text Colors:
+
+Primary text: Dark gray (#111827 or #1F2937)
+
+Secondary text (subdued notes or labels): Medium gray (#6B7280)
+
+This color scheme ensures accessible contrast and draws attention to important actions (e.g., marking habits done, adding new habits).
+
+3. Typographic Hierarchy
+Headings: Large, bold, and legible (e.g., [Font: Inter or Open Sans], Size ~24–28px for top headings).
+
+Section Subtitles: Slightly smaller (18–20px) with medium weight.
+
+Body Text: ~14–16px with regular weight.
+
+Secondary/Helper Text: ~12–14px with lighter color.
+
+Button Text: Bold, ~14–16px, with enough padding for large hit areas.
+
+4. Spacing and Layout
+Use generous padding around sections (24–32px).
+
+Segment content using soft divider lines or card containers.
+
+Group related metrics (like “Total Habits,” “Today’s Progress,” etc.) in a card or row of boxes for quick scanning.
+
+Align visual elements carefully: keep icon + text combos in a single row, with consistent spacing between them.
+
+Make the “Add Habit” button stand out with the primary brand color and a clear label, always visible on the screen so users can add habits anytime.
+
+5. Interaction and Microcopy
+Hover States & Clickable Elements:
+
+Use subtle color or shadow changes to let users know an element (like the “Edit” icon) is clickable.
+
+Tooltips / Info Icons:
+
+For more advanced metrics (like “Today’s Progress” or “Streaks”), add a small “i” info icon with an explanation.
+
+Mark as Complete:
+
+Single-click or tap checkmark to mark a habit as completed. Use a neat check animation (e.g., a brief pop or color fill) for positive reinforcement.
+
+Error/Warning States:
+
+If a habit was missed, show a subtle highlight or a small message “You missed this habit yesterday” or “Streak ended.”
+
+6. HCD Considerations
+Clear, Concise Labels:
+
+Use plain language (“Add Habit,” “Mark Complete”) rather than ambiguous icons alone.
+
+Consistency & Familiar Patterns:
+
+Keep the same icon or color usage for “complete” across the app.
+
+Accessibility:
+
+Ensure sufficient color contrast (WCAG AA or above).
+
+Allow keyboard navigation with visible focus states.
+
+Confirmation & Feedback:
+
+Show a quick success toast when a habit is marked complete or created.
+
+Provide an undo option for accidental actions.
+
+Progress Visibility:
+
+Large, easy-to-understand progress bars and streak counters.
+
+Encourage positive reinforcement (e.g., “You’ve done great 3 days in a row!”).

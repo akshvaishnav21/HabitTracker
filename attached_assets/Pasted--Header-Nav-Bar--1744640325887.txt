@@ -1,0 +1,51 @@
+ ┌───────────────────────────────────────────────────────────┐
+ │  Header / Nav Bar                                        │
+ │  ------------------------------------------------------- │
+ │  [ HabitTrack ]             [Date: Tuesday, May 7] [☰]   │
+ └───────────────────────────────────────────────────────────┘
+
+ ┌───────────────────────────────────────────────────────────┐
+ │  Top Summary Section                                     │
+ │  ------------------------------------------------------- │
+ │  | Total Habits |  Today’s Progress |  Best Streak  |   │
+ │  |      5       |       2/3  67%    |     12 days    |   │
+ │           [Colorful bar / small icon for each metric]    │
+ │  ------------------------------------------------------- │
+ │                      Weekly Completion 85%               │
+ │     [Progress bar spanning the width of this section]    │
+ └───────────────────────────────────────────────────────────┘
+
+ ┌───────────────────────────────────────────────────────────┐
+ │  Today’s Habits                                          │
+ │  ------------------------------------------------------- │
+ │  • Drink Water (Daily)                                   │
+ │    “Drink at least 8 cups a day”                         │
+ │    [Green streak badge: 5-day streak] [Completed? O/X]   │
+ │  ------------------------------------------------------- │
+ │  • Morning Meditation (Daily)                            │
+ │    “10 minutes of mindfulness”                           │
+ │    [Green streak badge: 18-day streak] [Completed? O/X]  │
+ │  ------------------------------------------------------- │
+ │  • Read a Book (Daily)                                   │
+ │    “Read at least 10 pages”                              │
+ │    [Green streak badge: 3-day streak] [Completed? O/X]   │
+ │  ------------------------------------------------------- │
+ │  [ “+ Add Habit” CTA button, aligned to the right ]      │
+ └───────────────────────────────────────────────────────────┘
+
+ ┌───────────────────────────────────────────────────────────┐
+ │  Weekly Progress                                         │
+ │  ------------------------------------------------------- │
+ │  Monday   Tuesday   Wednesday   Thursday    Friday ...   │
+ │   ✓        ✓         50%         ✓          0%           │
+ │  [Bar with dynamic color fill: “85% complete this week”] │
+ └───────────────────────────────────────────────────────────┘
+
+ ┌───────────────────────────────────────────────────────────┐
+ │  All Habits                                              │
+ │  ------------------------------------------------------- │
+ │  1) Drink Water   [Daily]    [85% completed] [Edit / ⓘ] │
+ │  2) Morning Med.  [Daily]    [95% completed] [Edit / ⓘ] │
+ │  3) Read a Book   [Daily]    [65% completed] [Edit / ⓘ] │
+ │  [Manage / Reorder Button]                              │
+ └───────────────────────────────────────────────────────────┘
