@@ -1,0 +1,157 @@
+You are a coding AI. I need you to build a web app for habit tracking based on the following Product Requirements Document (PRD). Please pay close attention to the requirements and architecture details:
+
+Product Requirements Document (PRD)
+
+Overview
+
+A lightweight, no-login habit-tracking web application that stores all data locally in the user’s browser.
+
+Product Vision
+
+Simplicity and Privacy: No account creation; user data remains private and local.
+
+Local Data Storage: Uses localStorage or IndexedDB to persist data.
+
+Minimalistic and Intuitive: Clean interface with a focus on quick, easy habit tracking.
+
+Goals and Objectives
+
+No Server Dependency: 100% offline; no reliance on external databases or cloud.
+
+Easy Habit Tracking: Rapid creation and marking of habits.
+
+Daily Engagement: At-a-glance view of daily habits.
+
+Progress Visibility: Provide streaks or completion metrics.
+
+User Stories
+
+Add Habit: Quickly add a habit with title and optional details.
+
+View Daily Habits: See habits due today.
+
+Mark Habit Completion: One-click/tap to mark as done.
+
+View History/Streaks: See day-by-day or consecutive-completion counts.
+
+Edit or Delete Habits: Modify or remove habits.
+
+Offline-First Experience: All functionality remains available without internet.
+
+Scope
+
+In-Scope:
+
+Local data storage.
+
+CRUD for habits.
+
+Streaks/progress metrics.
+
+Responsive design.
+
+Out of Scope:
+
+User authentication.
+
+External API integrations.
+
+Advanced analytics or data export.
+
+Collaboration/multi-user features.
+
+Feature Requirements
+
+Habit Creation: Name, optional notes, optional frequency/schedule.
+
+Dashboard View: Displays today’s habits, indicates pending/completed items.
+
+Habit History: Shows streaks, weekly/monthly progress.
+
+Edit/Delete: Update or remove habits.
+
+Local Persistence: All data stored in localStorage or IndexedDB.
+
+Offline-First: Fully usable offline, ideally as a PWA (optional).
+
+Technical Requirements
+
+Tech Stack: Any modern frontend framework (React/Vue/Svelte) or plain JS.
+
+Storage: localStorage or IndexedDB.
+
+Performance: Minimal overhead, fast load times.
+
+Security: Data remains on-device. No external compliance needed.
+
+Browser Compatibility: Works on modern browsers (Chrome, Firefox, Safari, Edge).
+
+UX/UI Requirements
+
+Minimalistic UI: Simple, clear, and intuitive.
+
+Dashboard: Lists current day’s habits, easy to mark complete.
+
+Create/Edit Habit: Simple form or modal.
+
+Streak Visualization: Basic streak count or small calendar.
+
+Responsive Layout: Properly adapts to mobile, tablet, and desktop.
+
+Data Model
+
+JSON-like structure stored locally, e.g.:
+
+json
+Copy
+Edit
+{
+  "habits": [
+    {
+      "id": "uuid",
+      "title": "Drink Water",
+      "description": "Drink at least 8 cups a day",
+      "schedule": "Daily",
+      "createdAt": "2025-01-01T12:00:00Z",
+      "history": {
+        "2025-01-10": true,
+        "2025-01-11": false
+      }
+    }
+  ]
+}
+Release Plan
+
+MVP: Local CRUD, daily dashboard, basic streak counter.
+
+Next Versions: Enhanced progress charts, weekly/monthly views, full PWA support.
+
+Acceptance Criteria
+
+No login required at any point.
+
+Data persists locally between sessions.
+
+Users can add, edit, delete habits, and mark them complete.
+
+Offline functionality is maintained.
+
+Responsive and accessible design.
+
+Risks and Considerations
+
+Clearing browser data erases all habit history.
+
+No device syncing (each device is independent).
+
+Data size constraints likely minimal for standard usage.
+
+Metrics and Success Criteria
+
+High daily or weekly usage indicates utility.
+
+Ongoing user engagement (streaks tracked).
+
+Minimal drop-off rate due to easy, frictionless experience.
+
+Your task: Please generate the appropriate code base that implements these features. The code should be structured for clarity and maintainability, adhering to modern best practices in front-end development. If relevant, outline project setup, recommended libraries or frameworks, localStorage/IndexedDB usage details, and recommended approaches for ensuring offline-first operation.
