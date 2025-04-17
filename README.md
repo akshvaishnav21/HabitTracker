@@ -1,56 +1,46 @@
+# Habit Tracker App
 
-# Habit Tracker
+A minimal habit tracking web application designed for seamless personal growth tracking. The app provides an intuitive interface for monitoring daily habits with offline capabilities and local browser storage.
 
-A modern web application for tracking daily, weekly, and custom habits with a clean UI and reminder system.
+## Key Technologies
 
-## Features
+- React.js frontend
+- TypeScript
+- Local browser storage
+- Progressive Web App (PWA) architecture
+- Responsive design for mobile and desktop
 
-- Track daily and weekly habits
-- Set custom reminders
-- View habit completion statistics
-- Visual progress tracking with contribution matrix
-- Responsive design that works on desktop and mobile
-- Weekly progress and streak tracking
+## Development
 
-## Tech Stack
+To start the development server:
 
-- Frontend: React + TypeScript + Vite
-- UI: Tailwind CSS + Shadcn/ui
-- Backend: Express.js
-- Database: PostgreSQL with Drizzle ORM
-- Notifications: Web Push API
-
-## Getting Started
-
-1. Clone the repository
-2. Install dependencies:
-```bash
-npm install
-```
-3. Start the development server:
 ```bash
 npm run dev
 ```
 
-The application will be available at `http://localhost:5000`
+## Deployment Instructions
 
-## Scripts
+To deploy this application correctly, follow these steps:
 
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run start` - Start production server
-- `npm run check` - Type check TypeScript
-- `npm run db:push` - Push database schema changes
+1. Run the custom build script to ensure files are in the correct location:
 
-## Project Structure
-
-```
-├── client/          # Frontend React application
-├── server/          # Express.js backend
-├── shared/          # Shared types and schemas
-└── public/          # Static assets
+```bash
+./build-for-deploy.sh
 ```
 
-## License
+This script:
+- Runs the normal build process
+- Copies files from `dist/public` to `dist` to fix the deployment structure
+- Ensures the `index.html` file is at the root of the `dist` directory
 
-MIT
+2. Deploy using Replit's deployment feature
+
+Without running this script first, the deployment will fail with an error about missing the index.html file.
+
+## Features
+
+- Track daily, weekly, and custom frequency habits
+- Visual habit completion matrices
+- Streak tracking
+- Progress statistics
+- Mobile-responsive design
