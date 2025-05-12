@@ -1,0 +1,32 @@
+You are a UX/UI expert. Analyze the following habit-tracker dashboard and generate a detailed redesign plan that will improve clarity, engagement, and usability. Your plan should cover:
+
+1. **Dashboard Metrics**  
+   - Group related statistics (e.g. “Overall Progress” vs. “Daily Snapshot”)  
+   - Replace plain percentages with visual elements (circular progress rings)  
+   - Use consistent icons and micro-copy for quick scanning  
+
+2. **Habit List Layout**  
+   - Transform each habit into a full-width card with a subtle shadow and accent-colored border indicating frequency  
+   - Add an icon next to each habit title for faster recognition  
+   - Standardize frequency badges (“Daily,” “Weekly,” “1× Weekly”) in pill-shaped labels in the top-right corner  
+   - Make the completion checkbox a prominent, tappable element on the left  
+
+3. **Progress Visualization**  
+   - For daily habits, replace the single-line dot chart with a 7×N mini calendar heatmap showing completion intensity  
+   - For weekly habits, display a row of seven dots per week, filling each dot on completion  
+   - Include hover or tap tooltips on each cell to show date and status  
+
+4. **Typography & Spacing**  
+   - Define a clear type hierarchy (e.g. 24 px for page titles, 18 px for section headers, 14 px for labels)  
+   - Increase vertical padding between elements (at least 16 px)  
+   - Use one primary accent color for actions and one secondary for positive feedback, reserving bright colors for special highlights  
+
+5. **Micro-Interactions & Feedback**  
+   - Animate checkmarks or confetti bursts when users mark habits complete or hit streak milestones  
+   - Provide clear hover/press states on all interactive elements  
+   - Design an engaging empty state with a friendly illustration when there are no habits to track  
+
+6. **Accessibility & Responsiveness**  
+   - Ensure WCAG-compliant color contrast ratios (≥ 4.5:1)  
+   - Make all controls keyboard-navigable and screen-reader friendly  
+   - Create a mobile-first layout: stack header cards in a swipeable carousel and collapse heatmaps to compact views 
